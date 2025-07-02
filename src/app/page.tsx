@@ -78,7 +78,16 @@ export default function OnboardingPage() {
           Your friendly guide to kicking NEPA goodbye. Let's find the perfect solar solution for you.
         </p>
 
-        <div className="mt-12">
+        <Card className="mt-12 w-full max-w-md mx-auto h-64 relative overflow-hidden">
+          <CardContent className="p-0 h-full">
+            <p className="absolute top-4 left-1/2 -translate-x-1/2 text-sm font-medium text-muted-foreground z-10 bg-background/80 px-2 py-1 rounded-full">Since you landed here...</p>
+            {stats.map((stat, index) => (
+              <StatCard key={stat.id} stat={stat} isVisible={index === currentStatIndex} />
+            ))}
+          </CardContent>
+        </Card>
+
+        <div className="mt-16">
           <h2 className="text-2xl md:text-3xl font-semibold text-foreground">NEPA dey show you shege?</h2>
           <p className="text-muted-foreground mt-2">Let's calculate your solar needs in a few steps.</p>
           <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
@@ -95,15 +104,6 @@ export default function OnboardingPage() {
           </div>
         </div>
         
-        <Card className="mt-16 w-full max-w-md mx-auto h-64 relative overflow-hidden">
-          <CardContent className="p-0 h-full">
-            <p className="absolute top-4 left-1/2 -translate-x-1/2 text-sm font-medium text-muted-foreground z-10 bg-background/80 px-2 py-1 rounded-full">Since you landed here...</p>
-            {stats.map((stat, index) => (
-              <StatCard key={stat.id} stat={stat} isVisible={index === currentStatIndex} />
-            ))}
-          </CardContent>
-        </Card>
-
         <div className="mt-8 flex items-center justify-center space-x-3">
           <Switch id="generator-mode" checked={onGenerator} onCheckedChange={setOnGenerator} aria-label="I am on generator right now" />
           <Label htmlFor="generator-mode" className="text-base font-medium">I'm on generator right now 😡</Label>
