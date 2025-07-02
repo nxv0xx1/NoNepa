@@ -1,10 +1,10 @@
 import type { AuditState, AuditCalculations } from './types';
 import config from '@/data/admin-config.json';
 
-// Constants
-const BATTERY_DOD_LIMIT = 0.50; // Depth of Discharge limit
-const AUTONOMY_DAYS = 1; // Days of backup power
-const PANEL_DEGRADATION_FACTOR = 0.80; // Accounts for real-world conditions
+// Constants from the original logic, kept for reference or potential future fallback.
+// const BATTERY_DOD_LIMIT = 0.50; 
+// const AUTONOMY_DAYS = 1; 
+// const PANEL_DEGRADATION_FACTOR = 0.80;
 
 export function calculateSolarNeeds(audit: AuditState): AuditCalculations {
   // 1. Calculate Total Load (Wattage)
@@ -19,58 +19,95 @@ export function calculateSolarNeeds(audit: AuditState): AuditCalculations {
 
   const totalWattage = applianceWattage + customApplianceWattage;
 
-  // 2. Calculate Daily Energy Consumption (Watt-hours)
-  // This is a simplification; a real audit would ask for hours of use per appliance.
-  // Here we assume an average of 4 hours of use for all appliances.
-  const averageDailyUseHours = 4;
-  const dailyEnergyWh = totalWattage * averageDailyUseHours;
-  const dailyEnergyKWh = dailyEnergyWh / 1000;
-
-  // 3. Size the Inverter based on total wattage bands
+  // 2. Size the Inverter based on total wattage bands
   let inverterSizeKVA: number;
-
-  if (totalWattage > 0 && totalWattage <= 1000) { // For loads of 200W – 1000W, suggest inverter size of 0.8kVA – 1.5kVA
+  if (totalWattage > 0 && totalWattage <= 1000) {
     inverterSizeKVA = 1.5;
-  } else if (totalWattage > 1000 && totalWattage <= 2000) { // For loads of 1000W – 2000W, suggest inverter size of 1.5kVA – 2.5kVA
+  } else if (totalWattage > 1000 && totalWattage <= 2000) {
     inverterSizeKVA = 2.5;
-  } else if (totalWattage > 2000 && totalWattage <= 3000) { // For loads of 2000W – 3000W, suggest inverter size of 3.5kVA
+  } else if (totalWattage > 2000 && totalWattage <= 3000) {
     inverterSizeKVA = 3.5;
-  } else if (totalWattage > 3000 && totalWattage <= 5000) { // For loads of 3000W – 5000W, suggest inverter size of 5kVA
+  } else if (totalWattage > 3000 && totalWattage <= 5000) {
     inverterSizeKVA = 5;
-  } else if (totalWattage > 5000 && totalWattage <= 7000) { // For loads of 5000W – 7000W, suggest inverter size of 7.5kVA – 10kVA
+  } else if (totalWattage > 5000 && totalWattage <= 7000) {
     inverterSizeKVA = 7.5;
-  } else if (totalWattage > 7000 && totalWattage <= 10000) { // For loads of 7000W – 10,000W, suggest inverter size of 10kVA – 15kVA
+  } else if (totalWattage > 7000 && totalWattage <= 10000) {
     inverterSizeKVA = 10;
-  } else if (totalWattage > 10000) { // For loads above 10,000W, suggest inverter size of 15kVA and above
+  } else if (totalWattage > 10000) {
     inverterSizeKVA = 15;
   } else {
-    inverterSizeKVA = 0; // Default for no load
+    inverterSizeKVA = 0;
   }
-
-  // Assuming a power factor of 0.8 to convert kVA to kW for battery calculation
   const inverterSizeKW = parseFloat((inverterSizeKVA * 0.8).toFixed(2));
 
-  // 4. Size the Battery Bank
-  const requiredBatteryWh = (dailyEnergyWh * AUTONOMY_DAYS) / BATTERY_DOD_LIMIT;
-  const backupEnergyWh = (totalWattage * audit.backupHours) / BATTERY_DOD_LIMIT;
-  
-  // Use the larger of the two to ensure both daily need and backup are met
-  const batteryCapacityWh = Math.max(requiredBatteryWh, backupEnergyWh);
-  
-  // Determine battery voltage based on inverter size
-  const batteryVoltage = inverterSizeKW <= 2.5 ? 12 : inverterSizeKW <= 5 ? 24 : 48;
-  const batteryCapacityAh = parseFloat((batteryCapacityWh / batteryVoltage).toFixed(0));
+  // 3. Size the Battery Bank based on new rules
+  let batteryCapacityAh: number;
+  let batteryVoltage: number;
 
-  // 5. Size the Solar Panel Array
-  const sunHours = config.locations[audit.location as keyof typeof config.locations] || 5; // Default to 5 hours
-  const requiredPanelWattage = dailyEnergyWh / (sunHours * PANEL_DEGRADATION_FACTOR);
-  
-  // Round up to a practical panel size (e.g., 350W, 450W, 550W)
-  let singlePanelWattage = 450;
-  if (requiredPanelWattage < 1000) singlePanelWattage = 350;
-  if (requiredPanelWattage > 4000) singlePanelWattage = 550;
+  if (totalWattage <= 500) {
+    batteryCapacityAh = 200;
+    batteryVoltage = 24;
+  } else if (totalWattage <= 1000) {
+    batteryCapacityAh = 400;
+    batteryVoltage = 24;
+  } else if (totalWattage <= 2000) {
+    batteryCapacityAh = 600;
+    batteryVoltage = 24;
+  } else if (totalWattage <= 3000) {
+    batteryCapacityAh = 1000;
+    batteryVoltage = inverterSizeKW > 2.5 ? 48 : 24; // Use inverter size to decide voltage
+  } else if (totalWattage <= 5000) {
+    batteryCapacityAh = 1500;
+    batteryVoltage = 48;
+  } else { // For loads > 5000W
+    batteryCapacityAh = 2000; // Use a high default for "custom-sized" to ensure UI works
+    batteryVoltage = 48;
+  }
 
-  const panelCount = Math.ceil(requiredPanelWattage / singlePanelWattage);
+  // Override with higher capacity based on backup hour requirements
+  if (audit.backupHours >= 24 || (totalWattage > 5000)) {
+      batteryCapacityAh = Math.max(batteryCapacityAh, 2000);
+      batteryVoltage = 48;
+  } else if (audit.backupHours >= 12 && totalWattage > 2000) {
+      batteryCapacityAh = Math.max(batteryCapacityAh, 1000);
+      batteryVoltage = inverterSizeKW > 2.5 ? 48 : 24;
+  }
+
+  // 4. Size the Solar Panel Array based on new rules
+  let panelCount: number;
+  let singlePanelWattage: number;
+  let averageDailyUseHours: number;
+
+  if (totalWattage <= 500) {
+    averageDailyUseHours = 6;
+    panelCount = 2;
+    singlePanelWattage = Math.ceil((700 / panelCount) / 50) * 50; // Use lower bound of 700W total
+  } else if (totalWattage <= 1000) {
+    averageDailyUseHours = 7;
+    panelCount = 3;
+    singlePanelWattage = Math.ceil((1200 / panelCount) / 50) * 50; // Use lower bound of 1200W total
+  } else if (totalWattage <= 2000) {
+    averageDailyUseHours = 10;
+    panelCount = 5;
+    singlePanelWattage = Math.ceil((2000 / panelCount) / 50) * 50; // Use lower bound of 2000W total
+  } else if (totalWattage <= 3000) {
+    averageDailyUseHours = 12;
+    panelCount = 8;
+    singlePanelWattage = Math.ceil((3500 / panelCount) / 50) * 50; // Use lower bound of 3500W total
+  } else if (totalWattage <= 7000) {
+    averageDailyUseHours = 12;
+    panelCount = 10;
+    singlePanelWattage = Math.ceil((5000 / panelCount) / 50) * 50; // Use lower bound of 5000W total
+  } else { // > 7000W
+    averageDailyUseHours = 12;
+    panelCount = 15;
+    singlePanelWattage = Math.ceil((8000 / panelCount) / 50) * 50; // Use lower bound of 8000W total
+  }
+
+  // 5. Calculate final display values
+  const dailyEnergyWh = totalWattage * averageDailyUseHours;
+  const dailyEnergyKWh = dailyEnergyWh / 1000;
+  const batteryCapacityWh = batteryCapacityAh * batteryVoltage;
 
   return {
     totalWattage,
