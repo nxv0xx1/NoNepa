@@ -1,12 +1,12 @@
 
 {
   "defaultWattages": {
-    "TV": 90,
-    "Fan": 60,
-    "Bulb": 10,
-    "Laptop": 65,
-    "Fridge": 150,
-    "Freezer": 200
+    "TV": 150,
+    "Fan": 100,
+    "Bulb": 20,
+    "Laptop": 90,
+    "Fridge": 200,
+    "Freezer": 300
   },
   "locations": {
     "Lagos": 4.5,
