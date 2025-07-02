@@ -1,0 +1,65 @@
+
+{
+  "defaultWattages": {
+    "TV": 90,
+    "Fan": 60,
+    "Bulb": 10,
+    "Laptop": 65,
+    "Fridge": 150,
+    "Freezer": 200
+  },
+  "locations": {
+    "Lagos": 4.5,
+    "Abuja": 5.5,
+    "Kano": 6.0,
+    "Port Harcourt": 4.0
+  },
+  "backupOptions": [2, 4, 6, 8, 12, 24],
+  "packages": [
+    {
+      "id": "starter",
+      "title": "Budget Starter",
+      "inverter": "1.5kVA",
+      "battery": "1 x 200Ah (12V)",
+      "panel": "2 x 250W Panels",
+      "price": "450,000 - 650,000",
+      "description": "Perfect for basic needs like lights, fans, TV, and charging gadgets. A great first step into solar.",
+      "idealFor": "Small apartments, students"
+    },
+    {
+      "id": "home-essential",
+      "title": "Home Essential",
+      "inverter": "3.5kVA",
+      "battery": "2 x 220Ah (24V)",
+      "panel": "4 x 350W Panels",
+      "price": "900,000 - 1,400,000",
+      "description": "Runs all the essentials plus a small fridge. Ideal for small families wanting significant relief from NEPA.",
+      "idealFor": "2-3 bedroom homes, small offices"
+    },
+    {
+      "id": "family-powerhouse",
+      "title": "Family Powerhouse",
+      "inverter": "5kVA",
+      "battery": "4 x 220Ah (48V)",
+      "panel": "8 x 450W Panels",
+      "price": "1,800,000 - 2,500,000",
+      "description": "Powers a whole household, including a freezer and maybe a small AC unit. True energy independence.",
+      "idealFor": "Larger families, businesses"
+    },
+    {
+      "id": "office-pro",
+      "title": "Office Pro",
+      "inverter": "7.5kVA",
+      "battery": "8 x 220Ah (48V)",
+      "panel": "12 x 500W Panels",
+      "price": "3,000,000 - 4,500,000",
+      "description": "Designed for small to medium businesses to keep operations running smoothly without generator noise and costs.",
+      "idealFor": "Offices, shops, restaurants"
+    }
+  ],
+  "whatsapp": {
+    "contactName": "NoNepa Solar Support",
+    "number": "+2348123456789",
+    "message": "Hello! I just completed the NoNepa solar audit and I'm interested in a solar package. Here is my summary:"
+  }
+}
