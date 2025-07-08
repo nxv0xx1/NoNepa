@@ -45,7 +45,7 @@ export default function LocationPage() {
           })}
         </div>
       </div>
-      <AuditNavButtons backPath="/audit/appliances" nextPath="/audit/backup-duration" isNextDisabled={!audit.location} />
+      <AuditNavButtons backPath="/" nextPath="/audit/appliances" isNextDisabled={!audit.location} />
     </div>
   );
 }

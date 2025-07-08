@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import type { AuditState, CustomAppliance } from '@/lib/types';
 import config from '@/data/admin-config.json';
 
-const AUDIT_STEPS = ['appliances', 'location', 'backup-duration', 'summary', 'recommendations', 'contact'];
+const AUDIT_STEPS = ['location', 'appliances', 'backup-duration', 'summary', 'recommendations', 'contact'];
 
 const defaultState: AuditState = {
   appliances: Object.keys(config.defaultWattages).reduce((acc, key) => ({ ...acc, [key]: 0 }), {}),

@@ -39,7 +39,7 @@ export default function BackupDurationPage() {
           })}
         </div>
       </div>
-      <AuditNavButtons backPath="/audit/location" nextPath="/audit/summary" isNextDisabled={audit.backupHours === 0} />
+      <AuditNavButtons backPath="/audit/appliances" nextPath="/audit/summary" isNextDisabled={audit.backupHours === 0} />
     </div>
   );
 }

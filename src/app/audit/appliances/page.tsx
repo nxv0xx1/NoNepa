@@ -95,7 +95,7 @@ export default function AppliancesPage() {
             </Button>
         </div>
       </div>
-      <AuditNavButtons nextPath="/audit/location" isNextDisabled={totalAppliances === 0} />
+      <AuditNavButtons backPath="/audit/location" nextPath="/audit/backup-duration" isNextDisabled={totalAppliances === 0} />
     </div>
   );
 }

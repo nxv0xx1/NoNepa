@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Zap, Fuel, Wallet, Users, Sun } from 'lucide-react';
+import { ArrowRight, Zap, Fuel, Wallet, Users, Sun, Wrench, TrendingUp, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -98,7 +98,7 @@ export default function OnboardingPage() {
                 <p className="text-muted-foreground mt-2">Let's calculate your solar needs in a few steps.</p>
                 <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
                     <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg shadow-lg transition-transform hover:scale-105">
-                        <Link href="/audit/appliances">
+                        <Link href="/audit/location">
                             Yes, Start My Solar Audit <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                     </Button>
@@ -113,7 +113,27 @@ export default function OnboardingPage() {
         
         {/* Bottom Section */}
         <div>
-            <div className="flex items-center justify-center space-x-3">
+            <div className="mt-10 w-full max-w-3xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                    <div className="flex flex-col items-center p-4">
+                        <Wrench className="w-8 h-8 text-accent mb-2" />
+                        <h4 className="font-semibold text-lg">Repairs & Maintenance</h4>
+                        <p className="text-sm text-muted-foreground">Keep your lights on, always.</p>
+                    </div>
+                    <div className="flex flex-col items-center p-4">
+                        <TrendingUp className="w-8 h-8 text-accent mb-2" />
+                        <h4 className="font-semibold text-lg">System Upgrades</h4>
+                        <p className="text-sm text-muted-foreground">More power for your growing needs.</p>
+                    </div>
+                    <div className="flex flex-col items-center p-4">
+                        <ShieldCheck className="w-8 h-8 text-accent mb-2" />
+                        <h4 className="font-semibold text-lg">New Installations</h4>
+                        <p className="text-sm text-muted-foreground">From scratch, done right.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-10 flex items-center justify-center space-x-3">
                 <Switch id="generator-mode" checked={onGenerator} onCheckedChange={setOnGenerator} aria-label="I am on generator right now" />
                 <Label htmlFor="generator-mode" className="text-base font-medium">I'm on generator right now 😡</Label>
             </div>
