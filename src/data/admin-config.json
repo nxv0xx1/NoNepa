@@ -1,4 +1,3 @@
-
 {
   "defaultWattages": {
     "TV": 150,
@@ -6,15 +5,22 @@
     "Bulb": 20,
     "Laptop": 90,
     "Fridge": 200,
-    "Freezer": 300
+    "Freezer": 450
   },
   "locations": {
     "Lagos": 4.5,
     "Abuja": 5.5,
-    "Kano": 6.0,
-    "Port Harcourt": 4.0
+    "Kano": 6,
+    "Port Harcourt": 4
   },
-  "backupOptions": [2, 4, 6, 8, 12, 24],
+  "backupOptions": [
+    2,
+    4,
+    6,
+    8,
+    12,
+    24
+  ],
   "packages": [
     {
       "id": "starter",
