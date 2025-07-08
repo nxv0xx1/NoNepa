@@ -67,5 +67,31 @@
     "contactName": "NoNepa Solar Support",
     "number": "+2348056463170",
     "message": "Hello! I just completed the NoNepa solar audit and I'm interested in a solar package. Here is my summary:"
-  }
+  },
+  "inverterRules": [
+    { "minWatts": 0, "maxWatts": 1000, "kva": 1.5 },
+    { "minWatts": 1000, "maxWatts": 2000, "kva": 2.5 },
+    { "minWatts": 2000, "maxWatts": 3000, "kva": 3.5 },
+    { "minWatts": 3000, "maxWatts": 5000, "kva": 5 },
+    { "minWatts": 5000, "maxWatts": 7000, "kva": 7.5 },
+    { "minWatts": 7000, "maxWatts": 10000, "kva": 10 },
+    { "minWatts": 10000, "maxWatts": 99999, "kva": 15 }
+  ],
+  "batteryRules": [
+    { "minWatts": 0, "maxWatts": 500, "minBackupHours": 0, "batteryAh": 200, "batteryVoltage": 24 },
+    { "minWatts": 500, "maxWatts": 1000, "minBackupHours": 0, "batteryAh": 400, "batteryVoltage": 24 },
+    { "minWatts": 1000, "maxWatts": 2000, "minBackupHours": 0, "batteryAh": 600, "batteryVoltage": 24 },
+    { "minWatts": 2000, "maxWatts": 3000, "minBackupHours": 0, "batteryAh": 1000, "batteryVoltage": 24 },
+    { "minWatts": 2000, "maxWatts": 3000, "minBackupHours": 12, "batteryAh": 1000, "batteryVoltage": 48 },
+    { "minWatts": 3000, "maxWatts": 5000, "minBackupHours": 0, "batteryAh": 1500, "batteryVoltage": 48 },
+    { "minWatts": 5000, "maxWatts": 99999, "minBackupHours": 0, "batteryAh": 2000, "batteryVoltage": 48 }
+  ],
+  "panelRules": [
+    { "minWatts": 0, "maxWatts": 500, "averageDailyUseHours": 6, "panelCount": 2, "singlePanelWattage": 350 },
+    { "minWatts": 500, "maxWatts": 1000, "averageDailyUseHours": 7, "panelCount": 3, "singlePanelWattage": 400 },
+    { "minWatts": 1000, "maxWatts": 2000, "averageDailyUseHours": 10, "panelCount": 5, "singlePanelWattage": 400 },
+    { "minWatts": 2000, "maxWatts": 3000, "averageDailyUseHours": 12, "panelCount": 8, "singlePanelWattage": 450 },
+    { "minWatts": 3000, "maxWatts": 7000, "averageDailyUseHours": 12, "panelCount": 10, "singlePanelWattage": 500 },
+    { "minWatts": 7000, "maxWatts": 99999, "averageDailyUseHours": 12, "panelCount": 15, "singlePanelWattage": 550 }
+  ]
 }

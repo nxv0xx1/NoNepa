@@ -1,3 +1,25 @@
+export interface InverterRule {
+  minWatts: number;
+  maxWatts: number;
+  kva: number;
+}
+
+export interface BatteryRule {
+  minWatts: number;
+  maxWatts: number;
+  minBackupHours: number;
+  batteryAh: number;
+  batteryVoltage: number;
+}
+
+export interface PanelRule {
+  minWatts: number;
+  maxWatts: number;
+  averageDailyUseHours: number;
+  panelCount: number;
+  singlePanelWattage: number;
+}
+
 export interface AdminConfig {
   defaultWattages: { [key: string]: number };
   locations: { [key: string]: number };
@@ -8,6 +30,9 @@ export interface AdminConfig {
     number: string;
     message: string;
   };
+  inverterRules: InverterRule[];
+  batteryRules: BatteryRule[];
+  panelRules: PanelRule[];
 }
 
 export interface Package {

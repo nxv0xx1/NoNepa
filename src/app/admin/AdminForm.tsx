@@ -36,12 +36,39 @@ const KeyValueSchema = z.object({
     value: z.number({ required_error: "Value is required", invalid_type_error: "Value must be a number" }),
 });
 
+const numberField = z.number({ required_error: "Value is required", invalid_type_error: "Value must be a number" }).min(0);
+
+const inverterRuleSchema = z.object({
+    minWatts: numberField,
+    maxWatts: numberField,
+    kva: numberField,
+});
+
+const batteryRuleSchema = z.object({
+    minWatts: numberField,
+    maxWatts: numberField,
+    minBackupHours: numberField,
+    batteryAh: numberField,
+    batteryVoltage: numberField,
+});
+
+const panelRuleSchema = z.object({
+    minWatts: numberField,
+    maxWatts: numberField,
+    averageDailyUseHours: numberField,
+    panelCount: numberField,
+    singlePanelWattage: numberField,
+});
+
 const formSchema = z.object({
     defaultWattages: z.array(KeyValueSchema),
     locations: z.array(KeyValueSchema),
     backupOptions: z.array(z.object({ value: z.number().min(0) })),
     packages: z.array(packageSchema),
     whatsapp: whatsappSchema,
+    inverterRules: z.array(inverterRuleSchema),
+    batteryRules: z.array(batteryRuleSchema),
+    panelRules: z.array(panelRuleSchema),
 });
 
 
@@ -60,25 +87,14 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
         defaultValues: preparedInitialData,
     });
 
-    const { fields: wattageFields, append: appendWattage, remove: removeWattage } = useFieldArray({
-        control: form.control,
-        name: "defaultWattages",
-    });
+    const { fields: wattageFields, append: appendWattage, remove: removeWattage } = useFieldArray({ control: form.control, name: "defaultWattages" });
+    const { fields: locationFields, append: appendLocation, remove: removeLocation } = useFieldArray({ control: form.control, name: "locations" });
+    const { fields: backupFields, append: appendBackup, remove: removeBackup } = useFieldArray({ control: form.control, name: "backupOptions" });
+    const { fields: packageFields, append: appendPackage, remove: removePackage } = useFieldArray({ control: form.control, name: "packages" });
+    const { fields: inverterRuleFields, append: appendInverterRule, remove: removeInverterRule } = useFieldArray({ control: form.control, name: "inverterRules" });
+    const { fields: batteryRuleFields, append: appendBatteryRule, remove: removeBatteryRule } = useFieldArray({ control: form.control, name: "batteryRules" });
+    const { fields: panelRuleFields, append: appendPanelRule, remove: removePanelRule } = useFieldArray({ control: form.control, name: "panelRules" });
 
-    const { fields: locationFields, append: appendLocation, remove: removeLocation } = useFieldArray({
-        control: form.control,
-        name: "locations",
-    });
-
-    const { fields: backupFields, append: appendBackup, remove: removeBackup } = useFieldArray({
-        control: form.control,
-        name: "backupOptions",
-    });
-     
-    const { fields: packageFields, append: appendPackage, remove: removePackage } = useFieldArray({
-        control: form.control,
-        name: "packages",
-    });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         const finalConfig: AdminConfig = {
@@ -128,6 +144,102 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
                         ))}
                         <Button type="button" variant="outline" onClick={() => appendWattage({ key: '', value: 0 })}>
                             <PlusCircle className="mr-2 h-4 w-4" /> Add Wattage
+                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
+
+                 <AccordionItem value="inverter-rules">
+                    <AccordionTrigger className="text-xl font-semibold">Inverter Sizing Rules</AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-4">
+                        <p className="text-sm text-muted-foreground">Rules are checked top-down. The first matching rule for a given total wattage will be used.</p>
+                        {inverterRuleFields.map((field, index) => (
+                            <Card key={field.id} className="relative p-4 pt-8">
+                                <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2 text-destructive" onClick={() => removeInverterRule(index)}><Trash2 className="h-5 w-5"/></Button>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div className="space-y-1">
+                                        <Label>Min Wattage</Label>
+                                        <Input type="number" {...form.register(`inverterRules.${index}.minWatts`, { valueAsNumber: true })} />
+                                        {errors.inverterRules?.[index]?.minWatts && <p className="text-sm text-destructive">{errors.inverterRules[index]?.minWatts?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Max Wattage</Label>
+                                        <Input type="number" {...form.register(`inverterRules.${index}.maxWatts`, { valueAsNumber: true })} />
+                                        {errors.inverterRules?.[index]?.maxWatts && <p className="text-sm text-destructive">{errors.inverterRules[index]?.maxWatts?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Recommended kVA</Label>
+                                        <Input type="number" step="0.1" {...form.register(`inverterRules.${index}.kva`, { valueAsNumber: true })} />
+                                        {errors.inverterRules?.[index]?.kva && <p className="text-sm text-destructive">{errors.inverterRules[index]?.kva?.message}</p>}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                        <Button type="button" variant="outline" onClick={() => appendInverterRule({ minWatts: 0, maxWatts: 0, kva: 0 })}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> Add Inverter Rule
+                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="battery-rules">
+                    <AccordionTrigger className="text-xl font-semibold">Battery Sizing Rules</AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-4">
+                         <p className="text-sm text-muted-foreground">For a given wattage, rules are checked by 'Min Backup Hours' (descending). The first match is used.</p>
+                        {batteryRuleFields.map((field, index) => (
+                            <Card key={field.id} className="relative p-4 pt-8">
+                                <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2 text-destructive" onClick={() => removeBatteryRule(index)}><Trash2 className="h-5 w-5"/></Button>
+                                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                                    <div className="space-y-1">
+                                        <Label>Min Watts</Label>
+                                        <Input type="number" {...form.register(`batteryRules.${index}.minWatts`, { valueAsNumber: true })} />
+                                        {errors.batteryRules?.[index]?.minWatts && <p className="text-sm text-destructive">{errors.batteryRules[index]?.minWatts?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Max Watts</Label>
+                                        <Input type="number" {...form.register(`batteryRules.${index}.maxWatts`, { valueAsNumber: true })} />
+                                        {errors.batteryRules?.[index]?.maxWatts && <p className="text-sm text-destructive">{errors.batteryRules[index]?.maxWatts?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Min Backup (Hrs)</Label>
+                                        <Input type="number" {...form.register(`batteryRules.${index}.minBackupHours`, { valueAsNumber: true })} />
+                                        {errors.batteryRules?.[index]?.minBackupHours && <p className="text-sm text-destructive">{errors.batteryRules[index]?.minBackupHours?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Battery (Ah)</Label>
+                                        <Input type="number" {...form.register(`batteryRules.${index}.batteryAh`, { valueAsNumber: true })} />
+                                        {errors.batteryRules?.[index]?.batteryAh && <p className="text-sm text-destructive">{errors.batteryRules[index]?.batteryAh?.message}</p>}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label>Voltage (V)</Label>
+                                        <Input type="number" {...form.register(`batteryRules.${index}.batteryVoltage`, { valueAsNumber: true })} />
+                                        {errors.batteryRules?.[index]?.batteryVoltage && <p className="text-sm text-destructive">{errors.batteryRules[index]?.batteryVoltage?.message}</p>}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                        <Button type="button" variant="outline" onClick={() => appendBatteryRule({ minWatts: 0, maxWatts: 0, minBackupHours: 0, batteryAh: 0, batteryVoltage: 0 })}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> Add Battery Rule
+                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
+
+                 <AccordionItem value="panel-rules">
+                    <AccordionTrigger className="text-xl font-semibold">Panel Sizing Rules</AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-4">
+                         <p className="text-sm text-muted-foreground">Rules are checked top-down. The first matching rule for a given total wattage will be used.</p>
+                        {panelRuleFields.map((field, index) => (
+                            <Card key={field.id} className="relative p-4 pt-8">
+                                <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2 text-destructive" onClick={() => removePanelRule(index)}><Trash2 className="h-5 w-5"/></Button>
+                                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                                    <div className="space-y-1"><Label>Min Watts</Label><Input type="number" {...form.register(`panelRules.${index}.minWatts`, { valueAsNumber: true })} />{errors.panelRules?.[index]?.minWatts && <p className="text-sm text-destructive">{errors.panelRules[index]?.minWatts?.message}</p>}</div>
+                                    <div className="space-y-1"><Label>Max Watts</Label><Input type="number" {...form.register(`panelRules.${index}.maxWatts`, { valueAsNumber: true })} />{errors.panelRules?.[index]?.maxWatts && <p className="text-sm text-destructive">{errors.panelRules[index]?.maxWatts?.message}</p>}</div>
+                                    <div className="space-y-1"><Label>Avg Use (Hrs)</Label><Input type="number" {...form.register(`panelRules.${index}.averageDailyUseHours`, { valueAsNumber: true })} />{errors.panelRules?.[index]?.averageDailyUseHours && <p className="text-sm text-destructive">{errors.panelRules[index]?.averageDailyUseHours?.message}</p>}</div>
+                                    <div className="space-y-1"><Label># Panels</Label><Input type="number" {...form.register(`panelRules.${index}.panelCount`, { valueAsNumber: true })} />{errors.panelRules?.[index]?.panelCount && <p className="text-sm text-destructive">{errors.panelRules[index]?.panelCount?.message}</p>}</div>
+                                    <div className="space-y-1"><Label>Panel Wattage</Label><Input type="number" {...form.register(`panelRules.${index}.singlePanelWattage`, { valueAsNumber: true })} />{errors.panelRules?.[index]?.singlePanelWattage && <p className="text-sm text-destructive">{errors.panelRules[index]?.singlePanelWattage?.message}</p>}</div>
+                                </div>
+                            </Card>
+                        ))}
+                        <Button type="button" variant="outline" onClick={() => appendPanelRule({ minWatts: 0, maxWatts: 0, averageDailyUseHours: 0, panelCount: 0, singlePanelWattage: 0 })}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> Add Panel Rule
                         </Button>
                     </AccordionContent>
                 </AccordionItem>
