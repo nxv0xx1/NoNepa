@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import DarkModePopup from '@/components/DarkModePopup';
 
 export const metadata: Metadata = {
   title: 'NoNepa Solar Audit',
@@ -24,7 +25,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
@@ -32,6 +33,7 @@ export default function RootLayout({
           <div className="fixed bottom-5 right-5 z-50">
             <ThemeToggle />
           </div>
+          <DarkModePopup />
           <Toaster />
         </ThemeProvider>
       </body>
