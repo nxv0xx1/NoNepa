@@ -30,7 +30,8 @@
       "panel": "2 x 250W Panels",
       "price": "450,000 - 650,000",
       "description": "Perfect for basic needs like lights, fans, TV, and charging gadgets. A great first step into solar.",
-      "idealFor": "Small apartments, students"
+      "idealFor": "Small apartments, students",
+      "imageUrl": "https://placehold.co/600x400.png"
     },
     {
       "id": "home-essential",
@@ -40,7 +41,8 @@
       "panel": "4 x 350W Panels",
       "price": "900,000 - 1,400,000",
       "description": "Runs all the essentials plus a small fridge. Ideal for small families wanting significant relief from NEPA.",
-      "idealFor": "2-3 bedroom homes, small offices"
+      "idealFor": "2-3 bedroom homes, small offices",
+      "imageUrl": "https://placehold.co/600x400.png"
     },
     {
       "id": "family-powerhouse",
@@ -50,7 +52,8 @@
       "panel": "8 x 450W Panels",
       "price": "1,800,000 - 2,500,000",
       "description": "Powers a whole household, including a freezer and maybe a small AC unit. True energy independence.",
-      "idealFor": "Larger families, businesses"
+      "idealFor": "Larger families, businesses",
+      "imageUrl": "https://placehold.co/600x400.png"
     },
     {
       "id": "office-pro",
@@ -60,7 +63,8 @@
       "panel": "12 x 500W Panels",
       "price": "3,000,000 - 4,500,000",
       "description": "Designed for small to medium businesses to keep operations running smoothly without generator noise and costs.",
-      "idealFor": "Offices, shops, restaurants"
+      "idealFor": "Offices, shops, restaurants",
+      "imageUrl": "https://placehold.co/600x400.png"
     }
   ],
   "whatsapp": {

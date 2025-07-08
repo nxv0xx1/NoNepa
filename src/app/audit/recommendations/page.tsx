@@ -6,6 +6,7 @@ import AuditNavButtons from '@/components/audit/AuditNavButtons';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { calculateSolarNeeds } from '@/lib/solar-calculations';
@@ -49,13 +50,30 @@ export default function RecommendationsPage() {
                                 <CardHeader className="pb-4">
                                     {level === 'recommended' && <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground">Recommended</Badge>}
                                     <CardTitle className="text-xl font-bold">{pkg.title}</CardTitle>
-                                    <CardDescription>{pkg.idealFor}</CardDescription>
+                                    {level === 'recommended' ? (
+                                        <CardDescription className="text-primary font-semibold h-10">
+                                            This is a great fit for your ~{calculations.inverterSizeKVA.toFixed(1)}kVA load.
+                                        </CardDescription>
+                                    ) : (
+                                        <CardDescription className="h-10">{pkg.idealFor}</CardDescription>
+                                    )}
                                 </CardHeader>
-                                <CardContent className="flex-grow">
+                                <CardContent className="flex-grow flex flex-col">
+                                    {pkg.imageUrl && (
+                                        <div className="relative w-full h-40 mb-4 rounded-md overflow-hidden">
+                                            <Image
+                                                src={pkg.imageUrl}
+                                                alt={pkg.title}
+                                                fill
+                                                className="object-cover"
+                                                data-ai-hint="solar package"
+                                            />
+                                        </div>
+                                    )}
                                     <p className="text-3xl font-extrabold my-4">
                                         ~&#8358;{pkg.price}
                                     </p>
-                                    <p className="text-sm text-muted-foreground mb-6 h-16">{pkg.description}</p>
+                                    <p className="text-sm text-muted-foreground mb-6 flex-grow">{pkg.description}</p>
                                     <ul className="space-y-2 text-sm">
                                         <li className="flex items-center gap-2">
                                             <CheckCircle2 className="h-4 w-4 text-green-500" />

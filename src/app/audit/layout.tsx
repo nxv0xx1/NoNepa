@@ -2,6 +2,7 @@ import { AuditProvider } from "@/context/AuditContext";
 import ProgressBar from "@/components/audit/ProgressBar";
 import Link from "next/link";
 import { Sun } from "lucide-react";
+import PageTransitionWrapper from "@/components/audit/PageTransitionWrapper";
 
 export default function AuditLayout({
   children,
@@ -25,7 +26,9 @@ export default function AuditLayout({
           </div>
         </header>
         <main className="flex-grow">
-          {children}
+          <PageTransitionWrapper>
+            {children}
+          </PageTransitionWrapper>
         </main>
       </div>
     </AuditProvider>

@@ -44,6 +44,7 @@ export interface Package {
   price: string;
   description: string;
   idealFor: string;
+  imageUrl: string;
 }
 
 export interface CustomAppliance {

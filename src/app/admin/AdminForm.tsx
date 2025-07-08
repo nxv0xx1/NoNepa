@@ -23,6 +23,7 @@ const packageSchema = z.object({
   price: z.string().min(1, "Price is required"),
   description: z.string().min(1, "Description is required"),
   idealFor: z.string().min(1, "Ideal For is required"),
+  imageUrl: z.string().url("Please provide a valid image URL."),
 });
 
 const whatsappSchema = z.object({
@@ -96,7 +97,7 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
     const { fields: panelRuleFields, append: appendPanelRule, remove: removePanelRule } = useFieldArray({ control: form.control, name: "panelRules" });
 
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const onSubmit = async (data: z.infer<typeof formSchema>>) => {
         const finalConfig: AdminConfig = {
             ...data,
             defaultWattages: data.defaultWattages.reduce((acc: Record<string, number>, { key, value }) => {
@@ -327,6 +328,11 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
                                         <Input {...form.register(`packages.${index}.price`)} />
                                         {errors.packages?.[index]?.price && <p className="text-sm text-destructive">{errors.packages[index]?.price?.message}</p>}
                                     </div>
+                                     <div className="sm:col-span-2 space-y-1">
+                                        <Label>Image URL</Label>
+                                        <Input {...form.register(`packages.${index}.imageUrl`)} placeholder="https://example.com/image.png" />
+                                        {errors.packages?.[index]?.imageUrl && <p className="text-sm text-destructive">{errors.packages[index]?.imageUrl?.message}</p>}
+                                    </div>
                                     <div className="sm:col-span-2 space-y-1">
                                         <Label>Ideal For</Label>
                                         <Input {...form.register(`packages.${index}.idealFor`)} />
@@ -340,7 +346,7 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
                                 </div>
                             </Card>
                         ))}
-                        <Button type="button" variant="outline" onClick={() => appendPackage({ id: '', title: '', inverter: '', battery: '', panel: '', price: '', description: '', idealFor: '' })}>
+                        <Button type="button" variant="outline" onClick={() => appendPackage({ id: '', title: '', inverter: '', battery: '', panel: '', price: '', description: '', idealFor: '', imageUrl: '' })}>
                             <PlusCircle className="mr-2 h-4 w-4" /> Add Package
                         </Button>
                     </AccordionContent>

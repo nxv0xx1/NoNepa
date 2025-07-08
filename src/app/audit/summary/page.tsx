@@ -5,9 +5,11 @@ import { calculateSolarNeeds } from '@/lib/solar-calculations';
 import AuditNavButtons from '@/components/audit/AuditNavButtons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { AlertCircle, Zap, Sun, Battery, Sigma } from 'lucide-react';
+import { AlertCircle, Zap, Sun, Battery, Sigma, Pencil } from 'lucide-react';
 import { useMemo } from 'react';
 import type { AuditCalculations } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const SummaryItem = ({ icon, title, value, tooltip }: { icon: React.ReactNode, title: string, value: string, tooltip: string }) => (
   <Card className="flex-1 min-w-[200px]">
@@ -51,8 +53,18 @@ export default function SummaryPage() {
         
         <Card className="mt-8 p-6">
             <CardHeader>
-                <CardTitle>Your Load Summary</CardTitle>
-                <CardDescription>A breakdown of your power consumption.</CardDescription>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <CardTitle>Your Load Summary</CardTitle>
+                        <CardDescription>A breakdown of your power consumption.</CardDescription>
+                    </div>
+                    <Button asChild variant="outline" size="sm">
+                        <Link href="/audit/appliances">
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit Load
+                        </Link>
+                    </Button>
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="flex flex-wrap gap-4">
