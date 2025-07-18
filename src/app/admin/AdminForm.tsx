@@ -97,7 +97,7 @@ export default function AdminForm({ initialConfig }: { initialConfig: AdminConfi
     const { fields: panelRuleFields, append: appendPanelRule, remove: removePanelRule } = useFieldArray({ control: form.control, name: "panelRules" });
 
 
-    const onSubmit = async (data: z.infer<typeof formSchema>>) => {
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
         const finalConfig: AdminConfig = {
             ...data,
             defaultWattages: data.defaultWattages.reduce((acc: Record<string, number>, { key, value }) => {
